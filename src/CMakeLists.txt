@@ -52,4 +52,7 @@ endif()
 set_target_properties(exotic_gui PROPERTIES
     FOLDER "exotic"
     OUTPUT_NAME "exotic-gui"
-    DEBUG_POSTFIX "d")
+    DEBUG_POSTFIX "d"
+    # Without this the install/export set would publish exotic::exotic_gui,
+    # and find_package() users would not get the same name as FetchContent users.
+    EXPORT_NAME "gui")
