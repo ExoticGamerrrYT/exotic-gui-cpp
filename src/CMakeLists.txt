@@ -5,7 +5,10 @@ configure_file(
 
 add_library(exotic_gui STATIC
     core.cpp
+    draw.cpp
+    font.cpp
     gl.cpp
+    renderer.cpp
     window.cpp)
 
 add_library(exotic::gui ALIAS exotic_gui)
@@ -15,6 +18,8 @@ target_sources(exotic_gui
         FILE_SET public_headers TYPE HEADERS
             BASE_DIRS "${PROJECT_SOURCE_DIR}/include"
             FILES
+                "${PROJECT_SOURCE_DIR}/include/exotic/draw.hpp"
+                "${PROJECT_SOURCE_DIR}/include/exotic/font.hpp"
                 "${PROJECT_SOURCE_DIR}/include/exotic/types.hpp"
                 "${PROJECT_SOURCE_DIR}/include/exotic/window.hpp"
         FILE_SET generated_headers TYPE HEADERS
@@ -32,6 +37,9 @@ target_compile_definitions(exotic_gui PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
 
 if(MSVC)
     target_compile_options(exotic_gui PRIVATE /W4 /permissive- /utf-8 /Zc:__cplusplus)
+    # We use the standard C library on purpose (std::getenv); MSVC's "unsafe"
+    # deprecations only point at Microsoft-specific replacements.
+    target_compile_definitions(exotic_gui PRIVATE _CRT_SECURE_NO_WARNINGS)
 else()
     target_compile_options(exotic_gui PRIVATE -Wall -Wextra -Wpedantic)
 endif()

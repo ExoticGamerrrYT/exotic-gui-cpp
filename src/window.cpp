@@ -1,6 +1,9 @@
 #include <exotic/window.hpp>
 
+#include <exotic/draw.hpp>
+
 #include "gl.hpp"
+#include "renderer.hpp"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -80,6 +83,9 @@ struct Window::Impl {
     std::array<GLFWcursor*, kCursorCount> cursors{};
     Cursor cursor = Cursor::Arrow;
 
+    DrawList draw_list;
+    std::unique_ptr<Renderer> renderer;
+
     static Impl& of(GLFWwindow* w) { return *static_cast<Impl*>(glfwGetWindowUserPointer(w)); }
 };
 
@@ -119,6 +125,11 @@ Window::Window(const WindowDesc& desc) : impl_(std::make_unique<Impl>()) {
     if (!gl::load(loader, &missing)) {
         throw std::runtime_error(std::string("exo::Window: OpenGL 3.3 entry point unavailable: ") +
                                  (missing ? missing : "?"));
+    }
+
+    self.renderer = std::make_unique<Renderer>();
+    if (!self.renderer->valid()) {
+        throw std::runtime_error("exo::Window: renderer setup failed: " + self.renderer->error());
     }
 
     for (int i = 0; i < kCursorCount; ++i) {
@@ -240,11 +251,19 @@ bool Window::begin_frame() {
                      static_cast<float>(c.b) / 255.0f, static_cast<float>(c.a) / 255.0f);
     gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
+    self.draw_list.reset({0.0f, 0.0f, self.fb_size.x, self.fb_size.y});
+
     return true;
 }
 
 void Window::end_frame() {
-    glfwSwapBuffers(impl_->handle);
+    Impl& self = *impl_;
+    self.renderer->render(self.draw_list, self.fb_size);
+    glfwSwapBuffers(self.handle);
+}
+
+DrawList& Window::draw() {
+    return impl_->draw_list;
 }
 
 void Window::close() {

@@ -14,6 +14,8 @@
 
 namespace exo {
 
+class DrawList;
+
 /// Mouse buttons, in GLFW order.
 enum class MouseButton : int { Left = 0, Right = 1, Middle = 2 };
 
@@ -95,8 +97,11 @@ public:
     /// Returns false once the user has asked to close the window.
     bool begin_frame();
 
-    /// Presents the frame.
+    /// Renders everything queued in draw() and presents the frame.
     void end_frame();
+
+    /// Geometry for the current frame. Cleared by every begin_frame().
+    DrawList& draw();
 
     void close();
     bool should_close() const;
