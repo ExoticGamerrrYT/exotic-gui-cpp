@@ -5,11 +5,14 @@
 // assert, which vanishes under NDEBUG).
 
 #include <exotic/draw.hpp>
+#include <exotic/theme.hpp>
 #include <exotic/types.hpp>
+#include <exotic/ui.hpp>
 #include <exotic/version.hpp>
 
 #include <cstdio>
 #include <cstring>
+#include <iterator>
 
 namespace {
 
@@ -199,6 +202,50 @@ void test_draw_shapes() {
     CHECK(list.clip() == kViewport);
 }
 
+void test_ids() {
+    // Widget state survives across frames because the id is a pure function of
+    // the label, so this has to stay stable and collision-free in practice.
+    static_assert(exo::hash_id("Save") == exo::hash_id("Save"));
+    static_assert(exo::hash_id("Save") != exo::hash_id("Load"));
+    static_assert(exo::hash_id("") == exo::kIdSeed);
+
+    // Scoping: the same label under a different parent must be a different id.
+    constexpr exo::Id panel_a = exo::hash_id("Controls");
+    constexpr exo::Id panel_b = exo::hash_id("Appearance");
+    static_assert(exo::hash_id("Reset", panel_a) != exo::hash_id("Reset", panel_b));
+    static_assert(exo::hash_id("Reset", panel_a) != exo::hash_id("Reset"));
+
+    // Cheap sanity check against a degenerate hash: no duplicates over a set of
+    // realistic labels.
+    const char* labels[] = {"Save", "Load", "Reset", "Volume", "Particles", "Project", "Dark", "Light",
+                            "Low",  "High", "a",     "b",      "aa",        "ab",      "ba"};
+    int collisions = 0;
+    for (std::size_t i = 0; i < std::size(labels); ++i) {
+        for (std::size_t j = i + 1; j < std::size(labels); ++j) {
+            if (exo::hash_id(labels[i]) == exo::hash_id(labels[j])) ++collisions;
+        }
+    }
+    CHECK(collisions == 0);
+}
+
+void test_theme() {
+    exo::Theme t = exo::Theme::dark();
+    const exo::Color accent = t.accent;
+    const float padding = t.padding;
+
+    t.scale(2.0f);
+    CHECK(near(t.padding, padding * 2.0f));
+    CHECK(near(t.item_height, exo::Theme::dark().item_height * 2.0f));
+    // Colours are not metrics.
+    CHECK(t.accent == accent);
+
+    // A nonsense factor must not silently zero the layout.
+    t.scale(0.0f);
+    CHECK(near(t.padding, padding * 2.0f));
+
+    CHECK(exo::Theme::light().background.r > exo::Theme::dark().background.r);
+}
+
 } // namespace
 
 int main() {
@@ -211,6 +258,8 @@ int main() {
     test_draw_batching();
     test_draw_culling();
     test_draw_shapes();
+    test_ids();
+    test_theme();
 
     std::printf("%d checks, %d failures\n", g_checks, g_failures);
     return g_failures == 0 ? 0 : 1;

@@ -9,3 +9,4 @@ endfunction()
 
 exotic_add_example(exotic_hello_window hello_window/main.cpp)
 exotic_add_example(exotic_shapes shapes/main.cpp)
+exotic_add_example(exotic_demo demo/main.cpp)
