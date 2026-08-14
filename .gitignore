@@ -1,0 +1,36 @@
+# Build output
+build/
+out/
+dist/
+install/
+*.zip
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+cmake_install.cmake
+compile_commands.json
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln
+*.vcxproj*
+
+# Editors & OS
+.cache/
+.idea/
+Thumbs.db
+desktop.ini
+
+# Binaries
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.obj
+*.exp

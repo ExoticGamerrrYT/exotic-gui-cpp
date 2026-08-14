@@ -1,0 +1,22 @@
+// Exotic GUI - version information (generated from version.hpp.in by CMake).
+
+#pragma once
+
+#define EXOTIC_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define EXOTIC_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define EXOTIC_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define EXOTIC_VERSION_STRING "@PROJECT_VERSION@"
+
+/// Encoded as MMmmpp so versions can be compared numerically.
+#define EXOTIC_VERSION                                                                                       \
+    (EXOTIC_VERSION_MAJOR * 10000 + EXOTIC_VERSION_MINOR * 100 + EXOTIC_VERSION_PATCH)
+
+namespace exo {
+
+/// Semantic version of the library this program was linked against.
+const char* version() noexcept;
+
+/// Human readable compiler / configuration summary, useful in bug reports.
+const char* build_info() noexcept;
+
+} // namespace exo
