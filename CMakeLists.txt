@@ -31,6 +31,10 @@ include(Dependencies)
 
 add_subdirectory(src)
 
+if(EXOTIC_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
 if(EXOTIC_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)

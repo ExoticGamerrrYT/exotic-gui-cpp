@@ -4,7 +4,9 @@ configure_file(
     @ONLY)
 
 add_library(exotic_gui STATIC
-    core.cpp)
+    core.cpp
+    gl.cpp
+    window.cpp)
 
 add_library(exotic::gui ALIAS exotic_gui)
 
@@ -14,6 +16,7 @@ target_sources(exotic_gui
             BASE_DIRS "${PROJECT_SOURCE_DIR}/include"
             FILES
                 "${PROJECT_SOURCE_DIR}/include/exotic/types.hpp"
+                "${PROJECT_SOURCE_DIR}/include/exotic/window.hpp"
         FILE_SET generated_headers TYPE HEADERS
             BASE_DIRS "${PROJECT_BINARY_DIR}/generated"
             FILES
