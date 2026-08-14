@@ -1,0 +1,10 @@
+function(exotic_add_example name)
+    add_executable(${name} ${ARGN})
+    target_link_libraries(${name} PRIVATE exotic::gui)
+    set_target_properties(${name} PROPERTIES FOLDER "examples")
+    if(MSVC)
+        target_compile_options(${name} PRIVATE /W4 /permissive- /utf-8)
+    endif()
+endfunction()
+
+exotic_add_example(exotic_hello_window hello_window/main.cpp)
