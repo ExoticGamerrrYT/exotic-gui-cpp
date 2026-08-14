@@ -9,6 +9,8 @@ add_library(exotic_gui STATIC
     font.cpp
     gl.cpp
     renderer.cpp
+    theme.cpp
+    ui.cpp
     window.cpp)
 
 add_library(exotic::gui ALIAS exotic_gui)
@@ -19,8 +21,11 @@ target_sources(exotic_gui
             BASE_DIRS "${PROJECT_SOURCE_DIR}/include"
             FILES
                 "${PROJECT_SOURCE_DIR}/include/exotic/draw.hpp"
+                "${PROJECT_SOURCE_DIR}/include/exotic/exotic.hpp"
                 "${PROJECT_SOURCE_DIR}/include/exotic/font.hpp"
+                "${PROJECT_SOURCE_DIR}/include/exotic/theme.hpp"
                 "${PROJECT_SOURCE_DIR}/include/exotic/types.hpp"
+                "${PROJECT_SOURCE_DIR}/include/exotic/ui.hpp"
                 "${PROJECT_SOURCE_DIR}/include/exotic/window.hpp"
         FILE_SET generated_headers TYPE HEADERS
             BASE_DIRS "${PROJECT_BINARY_DIR}/generated"
