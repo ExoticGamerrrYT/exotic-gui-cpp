@@ -96,6 +96,8 @@ struct Rect {
         const float b = bottom() < o.bottom() ? bottom() : o.bottom();
         return bounds(l, t, r > l ? r : l, b > t ? b : t);
     }
+
+    friend constexpr bool operator==(Rect, Rect) = default;
 };
 
 /// 8-bit sRGB colour with straight (non-premultiplied) alpha.
